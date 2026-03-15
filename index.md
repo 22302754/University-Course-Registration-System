@@ -11,3 +11,6 @@ Group A
 This project is a simplified university course registration system.
 It allows students to register for courses, checks prerequisites,
 and ensures class size limits are not exceeded.
+
+## Gantt Chart
+![Gantt Chart](Gantt.png)
