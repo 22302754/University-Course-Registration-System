@@ -12,5 +12,15 @@ This project is a simplified university course registration system.
 It allows students to register for courses, checks prerequisites,
 and ensures class size limits are not exceeded.
 
-## Gantt Chart
+## Lab 1 Gantt Chart
 ![Gantt Chart](Gantt.png)
+
+## Lab 2 - Resource Allocation
+
+![Gantt Chart1](gantt1-part1.png)
+![Gantt Chart2](gantt1-part2.png)
+
+### Explanation
+Tasks were assigned based on each role. Backend-related tasks were assigned to the developer responsible for system logic and database design. Frontend and UI tasks were assigned based on design responsibilities. Testing tasks were assigned after development to ensure system quality.
+
+
