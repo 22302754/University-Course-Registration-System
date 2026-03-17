@@ -25,7 +25,7 @@ Tasks were assigned based on each role. Backend-related tasks were assigned to t
 
 ## Project Gantt Chart
 
-![Project Gantt](gantt_project.png)
+![Project Gantt](gantt2.png)
 
 ### Project Plan Description
 The project is divided into phases including requirements, design, implementation, testing, and deployment. Tasks are organized with dependencies to ensure a smooth workflow.
