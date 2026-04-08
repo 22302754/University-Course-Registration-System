@@ -1,7 +1,7 @@
 # Project 19: University Course Registration System
 
 ## Class Group
-Group A
+Group 1
 
 ## Team Members
 - Mohammed Nouri – https://github.com/22302754
