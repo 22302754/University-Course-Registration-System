@@ -96,6 +96,8 @@ Add Course: The student requests to add a course; the controller checks current 
 ### Description
 Part 1 (Library Kiosk): The workflow starts with the student placing a book on the scanner and the system validating it. Three decision points control the flow — book validity (invalid ends the process), overdue status (overdue triggers fine calculation), and fine payment (refusal rejects the return). Once the book is accepted, three activities run in parallel via fork/join: updating inventory, sending the confirmation notification, and shelving the book.
 
+---
+
 
 ## Part 2: Tuition Payment
 
@@ -108,15 +110,21 @@ Part 2 (Tuition Payment): The student logs in and the system retrieves outstandi
 
 ## Lab 6 - Data Flow Diagrams (DFDs)
 
+---
+
 ## Part 1: 1.Context Diagram
 
 ### Diagram
 ![Context Diagram](libk_l0.png)
 
+---
+
 ## 2.Level 1 DFD
 
 ### Diagram
 ![Level 1 DFD ](libk_l1.png)
+
+---
 
 ## 3.Level 2 DFD
 
@@ -131,10 +139,14 @@ Part 1 (Library Kiosk): Three DFDs decomposing the Return Book System. The conte
 ### Diagram
 ![Context Diagram](grades_l0.png)
 
+---
+
 ## 2.Level 1 DFD
 
 ### Diagram
 ![Level 1 DFD](grades_l1.png)
+
+---
 
 ## 3.Level 2 DFD
 
