@@ -75,13 +75,13 @@ The university course registration system allows students to browse courses, sea
 Library Kiosk:  Student places the book, scanner reads the ID, LibraryDatabase confirms it's valid and on time, KioskSystem updates inventory, NotificationService sends confirmation, and ShelfReturnMechanism shelves the book. Alternative (overdue) — LibraryDatabase reports overdue; FineCalculator computes the fine, student pays via PaymentSystem, then inventory is updated and the rest of the flow proceeds. Alternative (invalid) — KioskSystem displays an error and ejects the book.
 
 
-## Part 2: Course Registration 
+## Part 2: Add_Course 
 
 ### Diagram
-![Course Registration](course_registration.png)
+![Add Course](add_course_sequence.png)
 
 ### Description
-Course Registration: Student logs in (authenticated by AuthService), searches the catalog, and selects a course. RegistrationController checks the student's academic record and the course's prerequisites and capacity. When both check out, it reserves a seat, saves the enrollment, and EmailService sends a confirmation. Alternative (course full) — The UI offers a waitlist; if the student accepts, the controller appends them to CourseCatalog's waitlist and returns the position. Alternative (prerequisites not met) — Registration is rejected with an error.
+Add Course: The student requests to add a course; the controller checks current enrollments and course details, and if eligible, notifies the advisor and shows "Awaiting approval". The advisor reviews the request via AdvisorPortal — on approval the system reserves a seat, saves the enrollment, and emails confirmation; on rejection it emails the reason. If the initial check fails (schedule conflict or credit limit exceeded), the request is rejected immediately without contacting the advisor.
 
 
 ## Lab5: Activity Diagrams
