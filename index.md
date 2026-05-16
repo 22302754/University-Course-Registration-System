@@ -84,4 +84,24 @@ Library Kiosk:  Student places the book, scanner reads the ID, LibraryDatabase c
 Course Registration: Student logs in (authenticated by AuthService), searches the catalog, and selects a course. RegistrationController checks the student's academic record and the course's prerequisites and capacity. When both check out, it reserves a seat, saves the enrollment, and EmailService sends a confirmation. Alternative (course full) — The UI offers a waitlist; if the student accepts, the controller appends them to CourseCatalog's waitlist and returns the position. Alternative (prerequisites not met) — Registration is rejected with an error.
 
 
+## Lab5: Activity Diagrams
+
+---
+
+## Part 1: Libary Kiosk
+
+### Diagram
+![Libary Kiosk](library_kiosk_activity.png)
+
+### Description
+Part 1 (Library Kiosk): The workflow starts with the student placing a book on the scanner and the system validating it. Three decision points control the flow — book validity (invalid ends the process), overdue status (overdue triggers fine calculation), and fine payment (refusal rejects the return). Once the book is accepted, three activities run in parallel via fork/join: updating inventory, sending the confirmation notification, and shelving the book.
+
+
+## Part 2: Tuition Payment
+
+### Diagram
+![Tuition Payment](tuition_payment_activity.png)
+
+### Description
+Part 2 (Tuition Payment): The student logs in and the system retrieves outstanding fees. Decision points handle balance check, payment method (credit card vs bank transfer — branches merge before validation), authorization, and a retry option on decline. On approval, four activities run concurrently: updating the account balance, generating a PDF receipt, sending a confirmation email, and notifying the Registrar's office — they're independent and parallel for faster processing.
 
