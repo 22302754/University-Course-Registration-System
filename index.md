@@ -62,4 +62,20 @@ The university course registration system allows students to browse courses, sea
 ![University Diagram](MyProject.png)
 
 
+## Lab4: Sequence Diagrams
+
+---
+
+## Part 1: Libary Kiosk
+
+### Diagram
+![Libary Kiosk](LibaryKiosk.png)
+
+
+## Part 2: Course Registration 
+
+### Diagram
+![Course Registration](course_registration,png)
+
+
 
