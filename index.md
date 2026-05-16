@@ -105,3 +105,45 @@ Part 1 (Library Kiosk): The workflow starts with the student placing a book on t
 ### Description
 Part 2 (Tuition Payment): The student logs in and the system retrieves outstanding fees. Decision points handle balance check, payment method (credit card vs bank transfer — branches merge before validation), authorization, and a retry option on decline. On approval, four activities run concurrently: updating the account balance, generating a PDF receipt, sending a confirmation email, and notifying the Registrar's office — they're independent and parallel for faster processing.
 
+
+## Lab 6 - Data Flow Diagrams (DFDs)
+
+## Part 1: 1.Context Diagram
+
+### Diagram
+![Context Diagram](libk_l0.png)
+
+## 2.Level 1 DFD
+
+### Diagram
+![Level 1 DFD ](libk_l1.png)
+
+## 3.Level 2 DFD
+
+### Diagram
+![Level 2 DFD ](libk_l2.png)
+
+### Description
+Part 1 (Library Kiosk): Three DFDs decomposing the Return Book System. The context diagram shows interaction with 4 external entities (Student, Library Database, Notification Service, Shelf Mechanism). Level 1 splits the system into 5 sub-processes accessing 3 data stores (Book Inventory, Borrower Records, Transaction Log). Level 2 expands Process 3.0 (Process Fine) into Calculate Fine → Present Fine → Record Payment.
+
+## Part 2: 1.Context Diagram
+
+### Diagram
+![Context Diagram](grades_l0.png)
+
+## 2.Level 1 DFD
+
+### Diagram
+![Level 1 DFD](grades_l1.png)
+
+## 3.Level 2 DFD
+
+### Diagram
+![Level 2 DFD](grades_l2.png)
+
+### Description
+Part 2 (Submit Final Grades): Context diagram shows the Grade Submission System exchanging data with Instructor, Registrar, Student, Email Service, and LMS/Roster Service. Level 1 decomposes the workflow into 6 sub-processes (authentication, roster loading, grade entry, submission/locking, registrar audit, student notification) using 4 data stores. Level 2 expands Process 3.0 (Enter & Validate Grades) into form display, validation, stats computation, and staging for submission.
+
+
+
+
