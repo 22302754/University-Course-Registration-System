@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UCRS — University Course Registration System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Newsreader:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#15263f;
+    --navy-2:#1f3a5f;
+    --ink:#1a1f2b;
+    --paper:#f4f1ea;
+    --paper-2:#ece7db;
+    --card:#fffdf8;
+    --line:#d9d2c4;
+    --gold:#b08d4f;
+    --gold-soft:#d8c39a;
+    --green:#3f6b4f;
+    --green-bg:#e3eee6;
+    --red:#9c3b3b;
+    --red-bg:#f3e2e0;
+    --amber:#8a6d2f;
+    --amber-bg:#f3ead2;
+    --blue-bg:#e4ebf3;
+    --muted:#6b6555;
+    --shadow:0 1px 2px rgba(21,38,63,.06),0 8px 28px rgba(21,38,63,.08);
+    --shadow-lg:0 2px 6px rgba(21,38,63,.08),0 24px 60px rgba(21,38,63,.16);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Newsreader',Georgia,serif;
+    color:var(--ink);
+    background:var(--paper);
+    -webkit-font-smoothing:antialiased;
+    font-size:16px;
+  }
+  ::selection{background:var(--gold-soft)}
+  button{font-family:inherit;cursor:pointer;border:none;background:none}
+  input,select{font-family:inherit;font-size:15px}
+  h1,h2,h3,h4{font-family:'Fraunces',serif;font-weight:600;color:var(--navy);line-height:1.1}
+  .mono{font-family:'IBM Plex Mono',monospace}
+
+  /* ---------- LOGIN ---------- */
+  #login-screen{
+    min-height:100vh;display:grid;grid-template-columns:1.05fr .95fr;
+  }
+  .login-art{
+    position:relative;background:
+      radial-gradient(120% 80% at 0% 0%, #21406a 0%, transparent 55%),
+      radial-gradient(140% 90% at 100% 100%, #0f1d31 0%, transparent 60%),
+      var(--navy);
+    color:#f4f1ea;padding:64px 60px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;
+  }
+  .login-art::after{
+    content:"";position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+    background-size:38px 38px;mask-image:radial-gradient(120% 120% at 70% 30%,#000 30%,transparent 80%);
+  }
+  .crest{width:54px;height:54px;border:1.5px solid var(--gold-soft);border-radius:50%;display:grid;place-items:center;font-family:'Fraunces';font-weight:700;font-size:22px;color:var(--gold-soft);position:relative;z-index:2}
+  .login-art h1{color:#fff;font-size:clamp(34px,4vw,52px);font-weight:600;letter-spacing:-.5px;position:relative;z-index:2;max-width:11ch}
+  .login-art .tag{font-family:'Newsreader';font-style:italic;color:var(--gold-soft);font-size:19px;margin-top:18px;position:relative;z-index:2;max-width:34ch}
+  .login-meta{position:relative;z-index:2;font-family:'IBM Plex Mono';font-size:12px;letter-spacing:.08em;color:rgba(244,241,234,.55);text-transform:uppercase}
+  .login-form-wrap{display:grid;place-items:center;padding:40px}
+  .login-card{width:100%;max-width:380px}
+  .login-card .eyebrow{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  .login-card h2{font-size:30px;margin-bottom:6px}
+  .login-card .sub{color:var(--muted);margin-bottom:30px;font-size:15px}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  .field input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:9px;background:var(--card);transition:.15s;color:var(--ink)}
+  .field input:focus{outline:none;border-color:var(--navy-2);box-shadow:0 0 0 3px var(--blue-bg)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 20px;border-radius:9px;font-family:'IBM Plex Mono';font-size:13px;letter-spacing:.05em;font-weight:500;transition:.15s;text-transform:uppercase}
+  .btn-primary{background:var(--navy);color:#fff;width:100%}
+  .btn-primary:hover{background:var(--navy-2)}
+  .btn-ghost{background:transparent;color:var(--navy);border:1px solid var(--line)}
+  .btn-ghost:hover{background:var(--paper-2)}
+  .login-err{background:var(--red-bg);color:var(--red);padding:10px 13px;border-radius:8px;font-size:13.5px;margin-bottom:18px;border:1px solid #e3c4c0;display:none}
+  .login-err.show{display:block}
+  .demo-accts{margin-top:26px;border-top:1px dashed var(--line);padding-top:18px}
+  .demo-accts p{font-family:'IBM Plex Mono';font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .demo-chip{display:flex;justify-content:space-between;align-items:center;width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;margin-bottom:7px;background:var(--card);transition:.12s;text-align:left}
+  .demo-chip:hover{border-color:var(--gold);background:#fff}
+  .demo-chip .r{font-family:'Fraunces';font-weight:600;color:var(--navy);font-size:14px}
+  .demo-chip .u{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted)}
+  .forgot{text-align:right;margin-top:-6px}
+  .forgot a{color:var(--navy-2);font-size:13px;text-decoration:none;border-bottom:1px solid var(--gold-soft);padding-bottom:1px}
+
+  /* ---------- APP SHELL ---------- */
+  #app{display:none;min-height:100vh}
+  .topbar{height:62px;background:var(--navy);display:flex;align-items:center;padding:0 26px;gap:18px;position:sticky;top:0;z-index:40}
+  .topbar .brand{display:flex;align-items:center;gap:11px;color:#fff}
+  .topbar .brand .crest{width:34px;height:34px;font-size:15px;border-color:var(--gold-soft)}
+  .topbar .brand b{font-family:'Fraunces';font-weight:600;font-size:17px;letter-spacing:.3px}
+  .topbar .brand span{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.14em;color:var(--gold-soft);display:block;margin-top:1px;text-transform:uppercase}
+  .topbar .spacer{flex:1}
+  .term-pill{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.08em;color:#cdd6e3;border:1px solid rgba(255,255,255,.18);padding:6px 11px;border-radius:20px}
+  .user-chip{display:flex;align-items:center;gap:10px;color:#fff}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-family:'Fraunces';font-weight:700;font-size:14px}
+  .user-chip .nm{font-size:14px;line-height:1.15}
+  .user-chip .rl{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.1em;color:var(--gold-soft);text-transform:uppercase}
+  .logout{color:#cdd6e3;font-size:12px;font-family:'IBM Plex Mono';letter-spacing:.06em;border:1px solid rgba(255,255,255,.18);padding:7px 12px;border-radius:7px;text-transform:uppercase}
+  .logout:hover{background:rgba(255,255,255,.08)}
+
+  .layout{display:grid;grid-template-columns:228px 1fr;min-height:calc(100vh - 62px)}
+  .side{background:var(--paper-2);border-right:1px solid var(--line);padding:22px 16px}
+  .side .sec{font-family:'IBM Plex Mono';font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:18px 10px 8px}
+  .nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:var(--ink);font-size:15px;width:100%;text-align:left;transition:.12s;margin-bottom:2px}
+  .nav-item:hover{background:#fff}
+  .nav-item.active{background:var(--navy);color:#fff}
+  .nav-item.active .ic{opacity:1}
+  .nav-item .ic{width:18px;height:18px;opacity:.6;flex:none}
+  .main{padding:34px 40px;max-width:1080px}
+  .page-head{margin-bottom:26px}
+  .page-head .eyebrow{font-family:'IBM Plex Mono';font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:9px}
+  .page-head h2{font-size:32px;letter-spacing:-.4px}
+  .page-head p{color:var(--muted);margin-top:7px;max-width:62ch;font-size:15.5px}
+
+  .cards{display:grid;gap:18px}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+  .grid-2{grid-template-columns:1fr 1fr}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:20px;box-shadow:var(--shadow)}
+  .stat .k{font-family:'IBM Plex Mono';font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .stat .v{font-family:'Fraunces';font-size:40px;font-weight:600;color:var(--navy);line-height:1;margin:8px 0 4px}
+  .stat .d{font-size:13.5px;color:var(--muted)}
+  .card h3{font-size:19px;margin-bottom:3px}
+  .card .ch-sub{color:var(--muted);font-size:14px;margin-bottom:16px}
+
+  .tbl{width:100%;border-collapse:collapse;font-size:14.5px}
+  .tbl th{text-align:left;font-family:'IBM Plex Mono';font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:9px 12px;border-bottom:1.5px solid var(--line)}
+  .tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .tbl tr:last-child td{border-bottom:none}
+  .tbl tr.hover-row:hover td{background:#fbf8f1}
+  .code{font-family:'IBM Plex Mono';font-size:13px;color:var(--navy-2);font-weight:500}
+
+  .badge{display:inline-block;font-family:'IBM Plex Mono';font-size:10.5px;letter-spacing:.06em;padding:4px 9px;border-radius:20px;text-transform:uppercase;font-weight:500}
+  .b-green{background:var(--green-bg);color:var(--green)}
+  .b-amber{background:var(--amber-bg);color:var(--amber)}
+  .b-red{background:var(--red-bg);color:var(--red)}
+  .b-blue{background:var(--blue-bg);color:var(--navy-2)}
+  .b-grey{background:var(--paper-2);color:var(--muted)}
+
+  .filterbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+  .filterbar input,.filterbar select{padding:10px 13px;border:1px solid var(--line);border-radius:9px;background:var(--card)}
+  .filterbar input{flex:1;min-width:200px}
+  .filterbar input:focus,.filterbar select:focus{outline:none;border-color:var(--navy-2);box-shadow:0 0 0 3px var(--blue-bg)}
+
+  .course-row td .ct{font-family:'Fraunces';font-weight:600;color:var(--navy);font-size:15px}
+  .course-row td .meta{color:var(--muted);font-size:12.5px;margin-top:2px}
+  .cap-bar{width:88px;height:7px;border-radius:4px;background:var(--paper-2);overflow:hidden;margin-top:5px}
+  .cap-bar i{display:block;height:100%;background:var(--green)}
+  .cap-bar.warn i{background:var(--amber)}
+  .cap-bar.full i{background:var(--red)}
+
+  .btn-sm{padding:8px 14px;font-size:11px;border-radius:7px;font-family:'IBM Plex Mono';letter-spacing:.05em;text-transform:uppercase;transition:.12s}
+  .btn-add{background:var(--navy);color:#fff}
+  .btn-add:hover{background:var(--navy-2)}
+  .btn-add:disabled{background:var(--paper-2);color:var(--muted);cursor:not-allowed}
+  .btn-rm{background:var(--red-bg);color:var(--red);border:1px solid #e3c4c0}
+  .btn-rm:hover{background:#eed3d0}
+  .btn-ok{background:var(--green-bg);color:var(--green);border:1px solid #bcd6c4}
+  .btn-ok:hover{background:#d2e6d8}
+  .btn-no{background:var(--red-bg);color:var(--red);border:1px solid #e3c4c0}
+  .btn-no:hover{background:#eed3d0}
+
+  .cart-wrap{position:sticky;top:84px}
+  .cart-line{display:flex;justify-content:space-between;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);gap:10px}
+  .cart-line:last-of-type{border-bottom:none}
+  .cart-line .ct{font-family:'Fraunces';font-weight:600;color:var(--navy);font-size:14.5px}
+  .cart-line .meta{color:var(--muted);font-size:12px;margin-top:2px}
+  .cart-total{display:flex;justify-content:space-between;font-family:'IBM Plex Mono';font-size:13px;padding:14px 0;border-top:2px solid var(--navy);margin-top:6px;color:var(--navy);font-weight:500}
+  .alert{padding:11px 13px;border-radius:9px;font-size:13.5px;margin:10px 0;display:flex;gap:9px;align-items:flex-start;line-height:1.4}
+  .alert-warn{background:var(--amber-bg);color:var(--amber);border:1px solid #e0d09a}
+  .alert-err{background:var(--red-bg);color:var(--red);border:1px solid #e3c4c0}
+  .alert-ok{background:var(--green-bg);color:var(--green);border:1px solid #bcd6c4}
+  .empty{color:var(--muted);font-size:14px;font-style:italic;padding:18px 0;text-align:center}
+
+  .req-card{border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:14px;background:var(--card);box-shadow:var(--shadow)}
+  .req-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;gap:14px}
+  .req-head .who{font-family:'Fraunces';font-weight:600;font-size:18px;color:var(--navy)}
+  .req-head .who span{font-family:'IBM Plex Mono';font-size:12px;color:var(--muted);font-weight:400;display:block;margin-top:2px}
+  .req-courses{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+  .req-courses .c{font-family:'IBM Plex Mono';font-size:12px;background:var(--paper-2);color:var(--navy-2);padding:6px 10px;border-radius:7px}
+  .req-meta{display:flex;gap:22px;margin-bottom:14px;font-size:13px;color:var(--muted)}
+  .req-meta b{color:var(--navy);font-family:'Fraunces'}
+  .req-actions{display:flex;gap:9px}
+  .toast{position:fixed;bottom:26px;right:26px;background:var(--navy);color:#fff;padding:14px 20px;border-radius:11px;box-shadow:var(--shadow-lg);font-size:14px;display:flex;gap:10px;align-items:center;transform:translateY(120%);transition:.32s cubic-bezier(.2,.8,.2,1);z-index:80;max-width:340px}
+  .toast.show{transform:translateY(0)}
+  .toast .dot{width:9px;height:9px;border-radius:50%;background:var(--gold-soft);flex:none}
+
+  .modal-bg{position:fixed;inset:0;background:rgba(21,38,63,.42);display:none;place-items:center;z-index:70;backdrop-filter:blur(2px)}
+  .modal-bg.show{display:grid}
+  .modal{background:var(--card);border-radius:15px;padding:26px;width:440px;max-width:92vw;box-shadow:var(--shadow-lg)}
+  .modal h3{font-size:22px;margin-bottom:4px}
+  .modal .sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+  .modal .field input,.modal .field select{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:9px;background:#fff}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
+
+  .fade-in{animation:fade .4s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media(max-width:920px){
+    #login-screen{grid-template-columns:1fr}.login-art{display:none}
+    .layout{grid-template-columns:1fr}.side{display:none}
+    .grid-3,.grid-2{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login-screen">
+  <div class="login-art">
+    <div class="crest">C</div>
+    <div>
+      <h1>University Course Registration System</h1>
+      <div class="tag">Plan your semester, resolve conflicts before they happen, and route approvals to your advisor — all in one place.</div>
+    </div>
+    <div class="login-meta">Cyprus International University · Faculty of Engineering · Spring 2026</div>
+  </div>
+  <div class="login-form-wrap">
+    <div class="login-card">
+      <div class="eyebrow">Secure Sign-in</div>
+      <h2>Welcome back</h2>
+      <p class="sub">Enter your university credentials to continue.</p>
+      <div class="login-err" id="loginErr"></div>
+      <div class="field">
+        <label>Student / Staff ID</label>
+        <input id="loginUser" type="text" placeholder="e.g. 22302754" autocomplete="username">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <div class="forgot"><a href="#" onclick="event.preventDefault()">Forgot password?</a></div>
+      <div style="height:18px"></div>
+      <button class="btn btn-primary" onclick="attemptLogin()">Sign in &nbsp;→</button>
+      <div class="demo-accts">
+        <p>Demo accounts — click to fill</p>
+        <button class="demo-chip" onclick="fillDemo('22302754','student')"><span class="r">Student</span><span class="u">22302754</span></button>
+        <button class="demo-chip" onclick="fillDemo('ADV-204','advisor')"><span class="r">Advisor</span><span class="u">ADV-204</span></button>
+        <button class="demo-chip" onclick="fillDemo('REG-001','registrar')"><span class="r">Registrar</span><span class="u">REG-001</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <div class="topbar">
+    <div class="brand">
+      <div class="crest">C</div>
+      <div><b>UCRS</b><span>Course Registration</span></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="term-pill">Spring 2026 · Add/Drop open</div>
+    <div class="user-chip">
+      <div class="avatar" id="tbAvatar">M</div>
+      <div><div class="nm" id="tbName">Mohammed Nouri</div><div class="rl" id="tbRole">Student</div></div>
+    </div>
+    <button class="logout" onclick="logout()">Sign out</button>
+  </div>
+  <div class="layout">
+    <aside class="side" id="sidebar"></aside>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalBg"><div class="modal" id="modalBox"></div></div>
+<div class="toast" id="toast"><span class="dot"></span><span id="toastMsg"></span></div>
+
+<script>
+/* ============================================================
+   SEED DATA  (stands in for the PostgreSQL tables in the report)
+   ============================================================ */
+const DB = {
+  users:{
+    '22302754':{name:'Mohammed Nouri',role:'student',program:'BSc Computer Engineering',gpa:3.42,advisor:'Dr. Selin Aydın',completed:['CMPE112','CMPE113','MATH151','MATH152','CMPE211','CMPE224','PHYS101']},
+    'ADV-204':{name:'Dr. Selin Aydın',role:'advisor',dept:'Computer Engineering'},
+    'REG-001':{name:'Registrar Office',role:'registrar',dept:'Student Affairs'}
+  },
+  // sections: day pattern, start/end in 24h decimal
+  courses:[
+    {code:'CMPE314',title:'Software Requirements Analysis & Modelling',credits:4,dept:'CMPE',instr:'B. Shahriari',day:'Mon/Wed',start:9,end:10.5,cap:40,enr:31,prereq:['CMPE224']},
+    {code:'CMPE318',title:'Web Application Development',credits:4,dept:'CMPE',instr:'A. Korhan',day:'Tue/Thu',start:9,end:10.5,cap:35,enr:35,prereq:['CMPE211']},
+    {code:'CMPE321',title:'Database Systems',credits:4,dept:'CMPE',instr:'H. Demir',day:'Mon/Wed',start:11,end:12.5,cap:45,enr:28,prereq:['CMPE224']},
+    {code:'CMPE302',title:'Computer Architecture',credits:4,dept:'CMPE',instr:'N. Yıldız',day:'Tue/Thu',start:11,end:12.5,cap:40,enr:22,prereq:['CMPE211']},
+    {code:'CMPE350',title:'Formal Languages & Automata',credits:3,dept:'CMPE',instr:'R. Ozan',day:'Fri',start:9,end:11,cap:30,enr:19,prereq:['MATH152']},
+    {code:'CMPE405',title:'Machine Learning',credits:4,dept:'CMPE',instr:'L. Aksoy',day:'Mon/Wed',start:9,end:10.5,cap:30,enr:30,prereq:['CMPE321','MATH152']},
+    {code:'MATH251',title:'Linear Algebra',credits:3,dept:'MATH',instr:'E. Polat',day:'Tue/Thu',start:13,end:14.5,cap:60,enr:41,prereq:['MATH152']},
+    {code:'ENGL201',title:'Technical Communication',credits:3,dept:'ENGL',instr:'J. Clarke',day:'Wed',start:14,end:16,cap:50,enr:33,prereq:[]},
+  ],
+  // advisor pending queue
+  requests:[
+    {id:101,student:'Ayşe Kaya',sid:'22301180',gpa:3.71,prog:'BSc CMPE · Year 3',courses:['CMPE314','CMPE321','MATH251'],credits:11,status:'PENDING'},
+    {id:102,student:'Deniz Arslan',sid:'22300455',gpa:2.88,prog:'BSc CMPE · Year 3',courses:['CMPE302','CMPE350','ENGL201'],credits:10,status:'PENDING'},
+    {id:103,student:'Omar Haddad',sid:'22302991',gpa:3.15,prog:'BSc CMPE · Year 2',courses:['CMPE314','CMPE318'],credits:8,status:'PENDING'},
+  ]
+};
+const CREDIT_LIMIT=21;
+
+/* ============================================================ */
+let SESSION=null, CART=[];
+const $=id=>document.getElementById(id);
+const fmtTime=t=>{const h=Math.floor(t),m=(t-h)*60;const ap=h>=12?'PM':'AM';let hh=h%12;if(hh===0)hh=12;return `${hh}:${m===0?'00':m} ${ap}`};
+const courseByCode=c=>DB.courses.find(x=>x.code===c);
+
+function toast(msg){$('toastMsg').textContent=msg;$('toast').classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(()=>$('toast').classList.remove('show'),2600)}
+function closeModal(){$('modalBg').classList.remove('show')}
+
+/* ---------- LOGIN (FR-002) ---------- */
+function fillDemo(u,role){$('loginUser').value=u;$('loginPass').value='demo123';}
+function attemptLogin(){
+  const u=$('loginUser').value.trim(), p=$('loginPass').value;
+  const err=$('loginErr');
+  if(!u||!p){err.textContent='Please enter both your ID and password.';err.classList.add('show');return}
+  const user=DB.users[u];
+  if(!user){err.textContent='Unknown ID or invalid credentials.';err.classList.add('show');return}
+  err.classList.remove('show');
+  SESSION={id:u,...user};CART=[];
+  $('login-screen').style.display='none';
+  $('app').style.display='block';
+  $('tbName').textContent=user.name;
+  $('tbRole').textContent=user.role.charAt(0).toUpperCase()+user.role.slice(1);
+  $('tbAvatar').textContent=user.name.charAt(0);
+  buildNav();
+  if(user.role==='student')go('dashboard');
+  else if(user.role==='advisor')go('approvals');
+  else go('manage');
+}
+function logout(){SESSION=null;$('app').style.display='none';$('login-screen').style.display='grid';$('loginUser').value='';$('loginPass').value='';}
+
+/* ---------- NAV ---------- */
+const NAV={
+  student:[['dashboard','Dashboard'],['catalogue','Course Catalogue'],['cart','My Registration'],['transcript','Grades & Transcript']],
+  advisor:[['approvals','Pending Approvals'],['advisees','My Advisees']],
+  registrar:[['manage','Manage Courses'],['reports','Enrolment Reports']]
+};
+const ICONS={
+  dashboard:'M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z',
+  catalogue:'M4 5h16M4 12h16M4 19h10',
+  cart:'M3 4h2l2 12h11l2-8H6',
+  transcript:'M6 2h9l5 5v15H6zM14 2v6h6',
+  approvals:'M9 11l3 3 8-8M4 12a8 8 0 1016 0',
+  advisees:'M16 11a4 4 0 10-8 0M4 21a8 8 0 0116 0',
+  manage:'M12 4v16M4 12h16',
+  reports:'M4 20V10M10 20V4M16 20v-8M22 20H2'
+};
+function buildNav(){
+  const items=NAV[SESSION.role];
+  $('sidebar').innerHTML=`<div class="sec">${SESSION.role} portal</div>`+items.map(([k,l])=>
+    `<button class="nav-item" id="nav-${k}" onclick="go('${k}')">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="${ICONS[k]}"/></svg>${l}
+    </button>`).join('');
+}
+function setActive(k){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const el=$('nav-'+k);if(el)el.classList.add('active')}
+
+/* ---------- ROUTER ---------- */
+function go(page){setActive(page);const r={dashboard:viewDashboard,catalogue:viewCatalogue,cart:viewCart,transcript:viewTranscript,approvals:viewApprovals,advisees:viewAdvisees,manage:viewManage,reports:viewReports};(r[page]||viewDashboard)()}
+
+/* ---------- STUDENT: DASHBOARD ---------- */
+function viewDashboard(){
+  const u=SESSION;const cartCredits=CART.reduce((s,c)=>s+courseByCode(c).credits,0);
+  $('main').innerHTML=`
+  <div class="page-head fade-in">
+    <div class="eyebrow">Spring 2026</div>
+    <h2>Good morning, ${u.name.split(' ')[0]}.</h2>
+    <p>Here is where your registration stands for the current term. The add/drop window closes in 6 days.</p>
+  </div>
+  <div class="cards grid-3 fade-in" style="margin-bottom:18px">
+    <div class="card stat"><div class="k">Cumulative GPA</div><div class="v">${u.gpa.toFixed(2)}</div><div class="d">${u.program}</div></div>
+    <div class="card stat"><div class="k">Credits in cart</div><div class="v">${cartCredits}</div><div class="d">of ${CREDIT_LIMIT} maximum this term</div></div>
+    <div class="card stat"><div class="k">Academic advisor</div><div class="v" style="font-size:22px;line-height:1.15;margin-top:14px">${u.advisor}</div><div class="d">Computer Engineering</div></div>
+  </div>
+  <div class="cards grid-2 fade-in">
+    <div class="card">
+      <h3>Registration status</h3>
+      <p class="ch-sub">Your current selection for Spring 2026.</p>
+      ${CART.length? `<table class="tbl"><tbody>${CART.map(c=>{const x=courseByCode(c);return `<tr><td><span class="code">${x.code}</span></td><td>${x.title}</td><td style="text-align:right"><span class="badge b-amber">Pending advisor</span></td></tr>`}).join('')}</tbody></table>`
+        :`<div class="empty">No courses selected yet. Visit the Course Catalogue to begin.</div>`}
+      <div style="margin-top:16px"><button class="btn-sm btn-add" onclick="go('catalogue')">Browse catalogue →</button></div>
+    </div>
+    <div class="card">
+      <h3>Term checklist</h3>
+      <p class="ch-sub">Steps to complete your registration.</p>
+      <table class="tbl"><tbody>
+        <tr><td><span class="badge b-green">Done</span></td><td>Tuition account cleared</td></tr>
+        <tr><td><span class="badge b-green">Done</span></td><td>Advising hold removed</td></tr>
+        <tr><td><span class="badge ${CART.length?'b-amber':'b-grey'}">${CART.length?'In progress':'To do'}</span></td><td>Select courses & submit</td></tr>
+        <tr><td><span class="badge b-grey">To do</span></td><td>Advisor approval</td></tr>
+      </tbody></table>
+    </div>
+  </div>`;
+}
+
+/* ---------- STUDENT: CATALOGUE (FR-006) ---------- */
+let CAT_DEPT='all', CAT_Q='';
+function viewCatalogue(){
+  $('main').innerHTML=`
+  <div class="page-head fade-in">
+    <div class="eyebrow">Spring 2026 · ${DB.courses.length} sections offered</div>
+    <h2>Course Catalogue</h2>
+    <p>Browse and filter the courses offered this term. Add sections to your registration — the system checks prerequisites and time conflicts before you submit.</p>
+  </div>
+  <div class="filterbar fade-in">
+    <input id="catSearch" placeholder="Search by code, title or instructor…" oninput="CAT_Q=this.value;renderCatTable()" value="${CAT_Q}">
+    <select id="catDept" onchange="CAT_DEPT=this.value;renderCatTable()">
+      <option value="all">All departments</option>
+      <option value="CMPE" ${CAT_DEPT==='CMPE'?'selected':''}>Computer Engineering</option>
+      <option value="MATH" ${CAT_DEPT==='MATH'?'selected':''}>Mathematics</option>
+      <option value="ENGL" ${CAT_DEPT==='ENGL'?'selected':''}>English</option>
+    </select>
+  </div>
+  <div class="card fade-in" style="padding:6px 6px 2px">
+    <table class="tbl"><thead><tr><th>Course</th><th>Schedule</th><th>Instructor</th><th>Seats</th><th></th></tr></thead>
+    <tbody id="catBody"></tbody></table>
+  </div>`;
+  renderCatTable();
+}
+function renderCatTable(){
+  const q=CAT_Q.toLowerCase();
+  const rows=DB.courses.filter(c=>(CAT_DEPT==='all'||c.dept===CAT_DEPT)&&
+    (c.code.toLowerCase().includes(q)||c.title.toLowerCase().includes(q)||c.instr.toLowerCase().includes(q)));
+  if(!rows.length){$('catBody').innerHTML=`<tr><td colspan="5"><div class="empty">No courses match your filters.</div></td></tr>`;return}
+  $('catBody').innerHTML=rows.map(c=>{
+    const pct=Math.round(c.enr/c.cap*100);const full=c.enr>=c.cap;const warn=pct>=85&&!full;
+    const inCart=CART.includes(c.code);
+    return `<tr class="course-row hover-row">
+      <td><div class="ct">${c.code} · <span style="font-weight:500">${c.title}</span></div>
+          <div class="meta">${c.credits} credits · ${c.dept}${c.prereq.length?` · prereq: ${c.prereq.join(', ')}`:' · no prerequisites'}</div></td>
+      <td>${c.day}<div class="meta">${fmtTime(c.start)} – ${fmtTime(c.end)}</div></td>
+      <td>${c.instr}</td>
+      <td>${c.enr}/${c.cap}<div class="cap-bar ${full?'full':warn?'warn':''}"><i style="width:${pct}%"></i></div></td>
+      <td style="text-align:right">${
+        full?`<span class="badge b-red">Full</span>`
+        :inCart?`<button class="btn-sm btn-rm" onclick="removeFromCart('${c.code}')">Remove</button>`
+        :`<button class="btn-sm btn-add" onclick="addToCart('${c.code}')">Add</button>`}</td>
+    </tr>`}).join('');
+}
+
+/* ---------- CART LOGIC (FR-007 conflict, FR-008 prereq, FR-009 limit) ---------- */
+function checkConflict(code){
+  const c=courseByCode(code);
+  for(const ex of CART){const e=courseByCode(ex);
+    const sameDay=e.day.split('/').some(d=>c.day.split('/').includes(d));
+    if(sameDay && c.start<e.end && c.end>e.start) return e;
+  }return null;
+}
+function missingPrereq(code){
+  const c=courseByCode(code);return c.prereq.filter(p=>!SESSION.completed.includes(p));
+}
+function addToCart(code){
+  const miss=missingPrereq(code);
+  if(miss.length){toast(`Missing prerequisite: ${miss.join(', ')}`);renderCatTable();flashCart('err',`${code} blocked — missing prerequisite ${miss.join(', ')}.`);return}
+  const conf=checkConflict(code);
+  if(conf){toast(`Time conflict with ${conf.code}`);renderCatTable();flashCart('err',`${code} conflicts with ${conf.code} (${conf.day} ${fmtTime(conf.start)}).`);return}
+  const credits=CART.reduce((s,c)=>s+courseByCode(c).credits,0)+courseByCode(code).credits;
+  if(credits>CREDIT_LIMIT){toast(`Exceeds ${CREDIT_LIMIT}-credit limit`);flashCart('warn',`Adding ${code} would exceed the ${CREDIT_LIMIT}-credit limit.`);renderCatTable();return}
+  CART.push(code);toast(`${code} added to your registration`);renderCatTable();
+}
+function removeFromCart(code){CART=CART.filter(c=>c!==code);if(typeof renderCatTable==='function'&&$('catBody'))renderCatTable();if($('cartPanel'))viewCart();toast(`${code} removed`)}
+let cartFlash=null;
+function flashCart(type,msg){cartFlash={type,msg};if($('cartPanel'))renderCartPanel()}
+
+/* ---------- STUDENT: MY REGISTRATION / CART ---------- */
+function viewCart(){
+  $('main').innerHTML=`
+  <div class="page-head fade-in">
+    <div class="eyebrow">Spring 2026</div>
+    <h2>My Registration</h2>
+    <p>Review your selected courses. The system validates prerequisites, time conflicts and your credit load before the request is sent to your advisor.</p>
+  </div>
+  <div class="cards" style="grid-template-columns:1.5fr 1fr;align-items:start">
+    <div class="card fade-in">
+      <h3>Selected courses</h3>
+      <p class="ch-sub">Add or remove from the catalogue at any time before submitting.</p>
+      <div id="cartList"></div>
+    </div>
+    <div class="card fade-in cart-wrap" id="cartPanel"></div>
+  </div>`;
+  renderCartList();renderCartPanel();
+}
+function renderCartList(){
+  if(!CART.length){$('cartList').innerHTML=`<div class="empty">Your registration is empty. <a href="#" onclick="go('catalogue');return false" style="color:var(--navy-2)">Browse the catalogue →</a></div>`;return}
+  $('cartList').innerHTML=`<table class="tbl"><tbody>${CART.map(c=>{const x=courseByCode(c);return `
+    <tr><td><div class="ct" style="font-family:'Fraunces';font-weight:600;color:var(--navy)">${x.code}</div><div class="meta" style="color:var(--muted);font-size:12.5px">${x.title}</div></td>
+    <td>${x.day}<div class="meta" style="color:var(--muted);font-size:12.5px">${fmtTime(x.start)}–${fmtTime(x.end)}</div></td>
+    <td>${x.credits} cr</td>
+    <td style="text-align:right"><button class="btn-sm btn-rm" onclick="removeFromCart('${x.code}');renderCartList();renderCartPanel()">Remove</button></td></tr>`}).join('')}</tbody></table>`;
+}
+function renderCartPanel(){
+  const credits=CART.reduce((s,c)=>s+courseByCode(c).credits,0);
+  let flash='';
+  if(cartFlash){flash=`<div class="alert alert-${cartFlash.type==='err'?'err':'warn'}">⚠ ${cartFlash.msg}</div>`}
+  $('cartPanel').innerHTML=`
+    <h3>Summary</h3>
+    <p class="ch-sub">Spring 2026 term</p>
+    ${CART.map(c=>{const x=courseByCode(c);return `<div class="cart-line"><div><div class="ct">${x.code}</div><div class="meta">${x.day} · ${fmtTime(x.start)}</div></div><div class="mono" style="font-size:13px;color:var(--muted)">${x.credits} cr</div></div>`}).join('')||'<div class="empty">Nothing selected</div>'}
+    <div class="cart-total"><span>Total credits</span><span>${credits} / ${CREDIT_LIMIT}</span></div>
+    ${flash}
+    <button class="btn btn-primary" style="margin-top:8px" ${CART.length?'':'disabled'} onclick="submitRegistration()">Submit for approval →</button>
+    <p style="font-size:12px;color:var(--muted);margin-top:11px;text-align:center">Sends to ${SESSION.advisor} for review (FR-013).</p>`;
+}
+function submitRegistration(){
+  if(!CART.length)return;
+  cartFlash=null;
+  $('cartPanel').innerHTML=`<h3>Submitted ✓</h3><div class="alert alert-ok" style="margin-top:14px">Your registration request for ${CART.length} course(s) has been sent to ${SESSION.advisor} for approval. You will be notified by email once a decision is made.</div>
+  <button class="btn btn-ghost" style="margin-top:8px" onclick="go('dashboard')">Back to dashboard</button>`;
+  toast('Registration submitted to advisor');
+}
+
+/* ---------- STUDENT: TRANSCRIPT (FR-014) ---------- */
+function viewTranscript(){
+  const grades={'CMPE112':'A','CMPE113':'A-','MATH151':'B+','MATH152':'B','CMPE211':'A','CMPE224':'B+','PHYS101':'B'};
+  $('main').innerHTML=`
+  <div class="page-head fade-in"><div class="eyebrow">Academic record</div><h2>Grades & Transcript</h2>
+  <p>Your completed coursework. Grades shown here feed the prerequisite checker used during registration.</p></div>
+  <div class="card fade-in"><table class="tbl"><thead><tr><th>Course</th><th>Title</th><th>Credits</th><th style="text-align:right">Grade</th></tr></thead><tbody>
+  ${SESSION.completed.map(c=>`<tr class="hover-row"><td><span class="code">${c}</span></td><td>${({CMPE112:'Programming I',CMPE113:'Programming II',MATH151:'Calculus I',MATH152:'Calculus II',CMPE211:'Data Structures',CMPE224:'Digital Logic',PHYS101:'Physics I'})[c]||'—'}</td><td>${c.startsWith('MATH')?3:4}</td><td style="text-align:right"><span class="badge b-blue">${grades[c]||'P'}</span></td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+
+/* ---------- ADVISOR: APPROVALS (FR-010, FR-011) ---------- */
+function viewApprovals(){
+  const pend=DB.requests.filter(r=>r.status==='PENDING');
+  $('main').innerHTML=`
+  <div class="page-head fade-in"><div class="eyebrow">${pend.length} awaiting your review</div><h2>Pending Approvals</h2>
+  <p>Registration requests from your advisees for Spring 2026. Review each student's selection and approve or return it.</p></div>
+  <div id="reqList" class="fade-in"></div>`;
+  renderReqs();
+}
+function renderReqs(){
+  const pend=DB.requests.filter(r=>r.status==='PENDING');
+  if(!pend.length){$('reqList').innerHTML=`<div class="card"><div class="empty">All caught up — no pending requests. 🎉</div></div>`;return}
+  $('reqList').innerHTML=pend.map(r=>`
+    <div class="req-card">
+      <div class="req-head">
+        <div class="who">${r.student}<span>${r.sid} · ${r.prog}</span></div>
+        <span class="badge b-amber">Pending</span>
+      </div>
+      <div class="req-courses">${r.courses.map(c=>`<span class="c">${c} · ${courseByCode(c)?courseByCode(c).title:''}</span>`).join('')}</div>
+      <div class="req-meta"><div>GPA <b>${r.gpa.toFixed(2)}</b></div><div>Credits <b>${r.credits}</b></div><div>Courses <b>${r.courses.length}</b></div></div>
+      <div class="req-actions">
+        <button class="btn-sm btn-ok" onclick="decide(${r.id},'APPROVED')">Approve</button>
+        <button class="btn-sm btn-no" onclick="decide(${r.id},'REJECTED')">Return</button>
+        <button class="btn-sm btn-ghost" style="border:1px solid var(--line)" onclick="viewStudentDetail(${r.id})">View detail</button>
+      </div>
+    </div>`).join('');
+}
+function decide(id,status){
+  const r=DB.requests.find(x=>x.id===id);r.status=status;
+  toast(`${r.student}'s request ${status.toLowerCase()} — student notified`);
+  renderReqs();
+}
+function viewStudentDetail(id){
+  const r=DB.requests.find(x=>x.id===id);
+  $('modalBox').innerHTML=`<h3>${r.student}</h3><div class="sub">${r.sid} · ${r.prog} · GPA ${r.gpa.toFixed(2)}</div>
+   <table class="tbl"><thead><tr><th>Course</th><th>Schedule</th><th>Credits</th></tr></thead><tbody>
+   ${r.courses.map(c=>{const x=courseByCode(c);return `<tr><td><span class="code">${c}</span><div class="meta" style="color:var(--muted);font-size:12px">${x?x.title:''}</div></td><td>${x?x.day+' '+fmtTime(x.start):'—'}</td><td>${x?x.credits:'—'}</td></tr>`}).join('')}
+   </tbody></table>
+   <div class="modal-actions"><button class="btn-sm btn-ghost" style="border:1px solid var(--line)" onclick="closeModal()">Close</button>
+   <button class="btn-sm btn-no" onclick="decide(${id},'REJECTED');closeModal()">Return</button>
+   <button class="btn-sm btn-ok" onclick="decide(${id},'APPROVED');closeModal()">Approve</button></div>`;
+  $('modalBg').classList.add('show');
+}
+function viewAdvisees(){
+  $('main').innerHTML=`<div class="page-head fade-in"><div class="eyebrow">Advising group</div><h2>My Advisees</h2><p>Students assigned to you for academic advising this year.</p></div>
+  <div class="card fade-in"><table class="tbl"><thead><tr><th>Student</th><th>Programme</th><th>GPA</th><th>Status</th></tr></thead><tbody>
+  ${DB.requests.map(r=>`<tr class="hover-row"><td><b style="font-family:Fraunces;color:var(--navy)">${r.student}</b><div class="meta" style="color:var(--muted);font-size:12px">${r.sid}</div></td><td>${r.prog}</td><td>${r.gpa.toFixed(2)}</td><td><span class="badge ${r.status==='PENDING'?'b-amber':r.status==='APPROVED'?'b-green':'b-red'}">${r.status[0]+r.status.slice(1).toLowerCase()}</span></td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+
+/* ---------- REGISTRAR: MANAGE COURSES (FR-015, FR-016) ---------- */
+function viewManage(){
+  $('main').innerHTML=`
+  <div class="page-head fade-in"><div class="eyebrow">Spring 2026 · catalogue administration</div><h2>Manage Courses</h2>
+  <p>Create, edit and configure course sections and their capacities for the current term.</p></div>
+  <div style="margin-bottom:16px" class="fade-in"><button class="btn-sm btn-add" onclick="openNewCourse()">+ New course section</button></div>
+  <div class="card fade-in" style="padding:6px 6px 2px"><table class="tbl"><thead><tr><th>Code</th><th>Title</th><th>Schedule</th><th>Capacity</th><th>Enrolled</th><th></th></tr></thead>
+  <tbody id="mgBody"></tbody></table></div>`;
+  renderManage();
+}
+function renderManage(){
+  $('mgBody').innerHTML=DB.courses.map((c,i)=>`<tr class="hover-row">
+    <td><span class="code">${c.code}</span></td><td>${c.title}<div class="meta" style="color:var(--muted);font-size:12px">${c.instr}</div></td>
+    <td>${c.day}<div class="meta" style="color:var(--muted);font-size:12px">${fmtTime(c.start)}–${fmtTime(c.end)}</div></td>
+    <td><input type="number" value="${c.cap}" style="width:64px;padding:6px 8px;border:1px solid var(--line);border-radius:6px" onchange="DB.courses[${i}].cap=+this.value;toast('${c.code} capacity updated')"></td>
+    <td>${c.enr}</td>
+    <td style="text-align:right"><button class="btn-sm btn-rm" onclick="DB.courses.splice(${i},1);renderManage();toast('${c.code} removed')">Delete</button></td>
+  </tr>`).join('');
+}
+function openNewCourse(){
+  $('modalBox').innerHTML=`<h3>New course section</h3><div class="sub">Add a section to the Spring 2026 catalogue.</div>
+   <div class="field"><label>Course code</label><input id="ncCode" placeholder="e.g. CMPE399"></div>
+   <div class="field"><label>Title</label><input id="ncTitle" placeholder="e.g. Special Topics in Software"></div>
+   <div style="display:flex;gap:10px">
+     <div class="field" style="flex:1"><label>Credits</label><input id="ncCr" type="number" value="3"></div>
+     <div class="field" style="flex:1"><label>Capacity</label><input id="ncCap" type="number" value="30"></div>
+   </div>
+   <div class="field"><label>Department</label><select id="ncDept"><option>CMPE</option><option>MATH</option><option>ENGL</option></select></div>
+   <div class="modal-actions"><button class="btn-sm btn-ghost" style="border:1px solid var(--line)" onclick="closeModal()">Cancel</button>
+   <button class="btn-sm btn-add" onclick="saveNewCourse()">Create section</button></div>`;
+  $('modalBg').classList.add('show');
+}
+function saveNewCourse(){
+  const code=$('ncCode').value.trim()||'NEW100';
+  DB.courses.push({code,title:$('ncTitle').value.trim()||'Untitled Course',credits:+$('ncCr').value,dept:$('ncDept').value,instr:'TBA',day:'Fri',start:13,end:15,cap:+$('ncCap').value,enr:0,prereq:[]});
+  closeModal();renderManage();toast(`${code} created`);
+}
+function viewReports(){
+  const total=DB.courses.reduce((s,c)=>s+c.enr,0);const seats=DB.courses.reduce((s,c)=>s+c.cap,0);
+  const full=DB.courses.filter(c=>c.enr>=c.cap).length;
+  $('main').innerHTML=`
+  <div class="page-head fade-in"><div class="eyebrow">Spring 2026</div><h2>Enrolment Reports</h2><p>Live snapshot of registration activity across all offered sections.</p></div>
+  <div class="cards grid-3 fade-in" style="margin-bottom:18px">
+    <div class="card stat"><div class="k">Total enrolments</div><div class="v">${total}</div><div class="d">across ${DB.courses.length} sections</div></div>
+    <div class="card stat"><div class="k">Seat utilisation</div><div class="v">${Math.round(total/seats*100)}%</div><div class="d">${total} of ${seats} seats filled</div></div>
+    <div class="card stat"><div class="k">Full sections</div><div class="v">${full}</div><div class="d">at or above capacity</div></div>
+  </div>
+  <div class="card fade-in"><h3>Enrolment by section</h3><p class="ch-sub">Sorted by fill rate.</p>
+  <table class="tbl"><thead><tr><th>Course</th><th>Enrolled / Cap</th><th style="width:200px">Fill rate</th></tr></thead><tbody>
+  ${[...DB.courses].sort((a,b)=>b.enr/b.cap-a.enr/a.cap).map(c=>{const pct=Math.round(c.enr/c.cap*100);const full=c.enr>=c.cap;const warn=pct>=85&&!full;return `<tr class="hover-row"><td><span class="code">${c.code}</span> <span style="color:var(--muted);font-size:13px">${c.title}</span></td><td>${c.enr}/${c.cap}</td><td><div class="cap-bar ${full?'full':warn?'warn':''}" style="width:160px"><i style="width:${pct}%"></i></div></td></tr>`}).join('')}
+  </tbody></table></div>`;
+}
+
+/* allow Enter to submit login */
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&$('login-screen').style.display!=='none')attemptLogin()});
+$('modalBg').addEventListener('click',e=>{if(e.target===$('modalBg'))closeModal()});
+</script>
+</body>
+</html>
