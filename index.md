@@ -25,7 +25,7 @@ Tasks were assigned based on each role. Backend-related tasks were assigned to t
 
 ## Project Gantt Chart
 
-![Project Gantt](gantt2.png)
+![Project Gantt](Project/gantt2.png)
 
 
 # Lab 3: Use Case Diagrams
