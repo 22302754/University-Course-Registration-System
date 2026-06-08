@@ -59,7 +59,7 @@ The online bookstore system allows users to browse and search for books, view de
 The university course registration system allows students to browse courses, search, and register for them. The system checks prerequisites and availability before enrollment. Students can also drop courses and pay fees through an external payment system. Admins manage courses, students, and registrations.
 
 ### Diagram
-![University Diagram](MyProject.png)
+![University Diagram](Project/Project_Case.png)
 
 
 ## Lab4: Sequence Diagrams
@@ -78,7 +78,7 @@ Library Kiosk:  Student places the book, scanner reads the ID, LibraryDatabase c
 ## Part 2: Add_Course 
 
 ### Diagram
-![Add Course](add_course_sequence.png)
+![Add Course](Project/Project_Sequence.png)
 
 ### Description
 Add Course: The student requests to add a course; the controller checks current enrollments and course details, and if eligible, notifies the advisor and shows "Awaiting approval". The advisor reviews the request via AdvisorPortal — on approval the system reserves a seat, saves the enrollment, and emails confirmation; on rejection it emails the reason. If the initial check fails (schedule conflict or credit limit exceeded), the request is rejected immediately without contacting the advisor.
@@ -102,7 +102,7 @@ Part 1 (Library Kiosk): The workflow starts with the student placing a book on t
 ## Part 2: Tuition Payment
 
 ### Diagram
-![Tuition Payment](tuition_payment_activity.png)
+![Tuition Payment](Project/Project_Activity.png)
 
 ### Description
 Part 2 (Tuition Payment): The student logs in and the system retrieves outstanding fees. Decision points handle balance check, payment method (credit card vs bank transfer — branches merge before validation), authorization, and a retry option on decline. On approval, four activities run concurrently: updating the account balance, generating a PDF receipt, sending a confirmation email, and notifying the Registrar's office — they're independent and parallel for faster processing.
@@ -137,14 +137,14 @@ Part 1 (Library Kiosk): Three DFDs decomposing the Return Book System. The conte
 ## Part 2: 1.Context Diagram
 
 ### Diagram
-![Context Diagram](grades_l0.png)
+![Context Diagram](Project/Project_Data0.png)
 
 ---
 
 ## 2.Level 1 DFD
 
 ### Diagram
-![Level 1 DFD](grades_l1.png)
+![Level 1 DFD](Project/Project_Data1.png)
 
 ---
 
